@@ -1,0 +1,14 @@
+{% load static %}
+<section class="newsletter-section">
+  <div class="container">
+    <span class="caption" style="color:rgba(244,237,228,0.5);display:block;margin-bottom:.75rem;">Únete a la comunidad</span>
+    <h2>El Caribe en tu bandeja de entrada</h2>
+    <p class="lead">Sé la primera en conocer nuevas colecciones, historias detrás de la marca y ofertas exclusivas.</p>
+    <form class="newsletter-form" action="{% url 'pages:newsletter' %}" method="post">
+      {% csrf_token %}
+      <input type="hidden" name="source" value="footer">
+      <input type="email" name="email" class="newsletter-input" placeholder="Tu email" required aria-label="Email">
+      <button type="submit" class="btn btn-pink">Suscribirme</button>
+    </form>
+  </div>
+</section>

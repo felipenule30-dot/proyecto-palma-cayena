@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static currency %}
+
+{% block title %}Pago — Palma Cayena{% endblock %}
+{% block navbar_class %}scrolled{% endblock %}
+{% block newsletter %}{% endblock %}
+
+{% block content %}
+<div style="padding-top:72px;">
+  <div class="container section">
+    <div style="max-width:600px;margin:0 auto;text-align:center;">
+
+      <span class="caption text-pink" style="display:block;margin-bottom:1rem;">Paso final</span>
+      <h1 style="margin-bottom:.5rem;">Completa tu pago</h1>
+      <p class="lead" style="margin-bottom:2.5rem;">Pedido <strong>#{{ order.order_number }}</strong> · Total: <strong>{{ order.total|cop_full }}</strong></p>
+
+      <!-- Resumen del pedido -->
+      <div class="cart-summary" style="text-align:left;margin-bottom:2rem;">
+        <h3 style="margin-bottom:1rem;font-size:1rem;">Enviando a</h3>
+        <p style="font-size:.9rem;color:var(--color-brown-light);">
+          {{ order.full_name }}<br>
+          {{ order.address }}<br>
+          {{ order.city }}{% if order.department %}, {{ order.department }}{% endif %}<br>
+          {{ order.country }}
+        </p>
+      </div>
+
+      {% if wompi_public_key %}
+      <!-- Botón Wompi -->
+      <div id="wompi-btn-container" style="margin:2rem 0;">
+        <script src="https://checkout.wompi.co/widget.js"
+          data-render="button"
+          data-public-key="{{ wompi_public_key }}"
+          data-currency="COP"
+          data-amount-in-cents="{{ amount_in_cents }}"
+          data-reference="{{ order.order_number }}"
+          data-redirect-url="{{ request.scheme }}://{{ request.get_host }}{% url 'checkout:confirmation' order.order_number %}">
+        </script>
+      </div>
+      <p class="caption" style="margin-top:1rem;">Pago seguro procesado por <strong>Wompi</strong></p>
+      {% else %}
+      <!-- Sin pasarela configurada (desarrollo) -->
+      <div style="background:var(--color-gray-100);border-radius:var(--radius-md);padding:2rem;margin-bottom:2rem;">
+        <p style="font-size:.9rem;color:var(--color-brown-light);margin-bottom:1rem;">
+          <strong>Modo desarrollo:</strong> Wompi no está configurado.<br>
+          Configura <code>WOMPI_PUBLIC_KEY</code> en tu archivo <code>.env</code>.
+        </p>
+        <a href="{% url 'checkout:confirmation' order.order_number %}" class="btn btn-primary">
+          Simular pago exitoso (solo desarrollo)
+        </a>
+      </div>
+      {% endif %}
+
+      <a href="{% url 'cart:detail' %}" class="caption text-pink" style="display:block;margin-top:1rem;">← Volver al carrito</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

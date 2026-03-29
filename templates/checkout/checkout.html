@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% load static currency %}
+
+{% block title %}Checkout — Palma Cayena{% endblock %}
+{% block navbar_class %}scrolled{% endblock %}
+{% block newsletter %}{% endblock %}
+
+{% block content %}
+<div style="padding-top:72px;">
+  <div class="container section">
+
+    <div class="breadcrumb">
+      <a href="{% url 'pages:home' %}">Inicio</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="{% url 'cart:detail' %}">Carrito</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>Checkout</span>
+    </div>
+
+    <h1 style="margin-bottom:2.5rem;">Finalizar pedido</h1>
+
+    <div class="checkout-layout">
+
+      <!-- FORMULARIO -->
+      <div>
+        <form method="post" id="checkout-form">
+          {% csrf_token %}
+
+          <h3 style="font-size:1rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1.5rem;font-family:var(--font-body);font-style:normal;">Información de contacto</h3>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="{{ form.first_name.id_for_label }}">Nombre *</label>
+              <input type="text" name="first_name" id="{{ form.first_name.id_for_label }}"
+                     class="form-control {% if form.first_name.errors %}is-invalid{% endif %}"
+                     placeholder="Tu nombre" value="{{ form.first_name.value|default:'' }}" required>
+              {% if form.first_name.errors %}<div class="form-error">{{ form.first_name.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="{{ form.last_name.id_for_label }}">Apellido *</label>
+              <input type="text" name="last_name" id="{{ form.last_name.id_for_label }}"
+                     class="form-control {% if form.last_name.errors %}is-invalid{% endif %}"
+                     placeholder="Tu apellido" value="{{ form.last_name.value|default:'' }}" required>
+              {% if form.last_name.errors %}<div class="form-error">{{ form.last_name.errors.0 }}</div>{% endif %}
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="{{ form.email.id_for_label }}">Email *</label>
+              <input type="email" name="email" id="{{ form.email.id_for_label }}"
+                     class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+                     placeholder="hola@tucorreo.com" value="{{ form.email.value|default:'' }}" required>
+              {% if form.email.errors %}<div class="form-error">{{ form.email.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="{{ form.phone.id_for_label }}">Teléfono *</label>
+              <input type="tel" name="phone" id="{{ form.phone.id_for_label }}"
+                     class="form-control {% if form.phone.errors %}is-invalid{% endif %}"
+                     placeholder="+57 300 000 0000" value="{{ form.phone.value|default:'' }}" required>
+              {% if form.phone.errors %}<div class="form-error">{{ form.phone.errors.0 }}</div>{% endif %}
+            </div>
+          </div>
+
+          <h3 style="font-size:1rem;letter-spacing:.1em;text-transform:uppercase;margin:2rem 0 1.5rem;font-family:var(--font-body);font-style:normal;">Dirección de envío</h3>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="{{ form.country.id_for_label }}">País *</label>
+              <input type="text" name="country" id="{{ form.country.id_for_label }}"
+                     class="form-control" placeholder="Colombia"
+                     value="{{ form.country.value|default:'Colombia' }}" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="{{ form.department.id_for_label }}">Departamento</label>
+              <input type="text" name="department" id="{{ form.department.id_for_label }}"
+                     class="form-control" placeholder="Bolívar"
+                     value="{{ form.department.value|default:'' }}">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="{{ form.city.id_for_label }}">Ciudad *</label>
+              <input type="text" name="city" id="{{ form.city.id_for_label }}"
+                     class="form-control {% if form.city.errors %}is-invalid{% endif %}"
+                     placeholder="Cartagena" value="{{ form.city.value|default:'' }}" required>
+              {% if form.city.errors %}<div class="form-error">{{ form.city.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="{{ form.postal_code.id_for_label }}">Código postal</label>
+              <input type="text" name="postal_code" id="{{ form.postal_code.id_for_label }}"
+                     class="form-control" placeholder="130001"
+                     value="{{ form.postal_code.value|default:'' }}">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="{{ form.address.id_for_label }}">Dirección completa *</label>
+            <input type="text" name="address" id="{{ form.address.id_for_label }}"
+                   class="form-control {% if form.address.errors %}is-invalid{% endif %}"
+                   placeholder="Calle, número, barrio, apartamento..."
+                   value="{{ form.address.value|default:'' }}" required>
+            {% if form.address.errors %}<div class="form-error">{{ form.address.errors.0 }}</div>{% endif %}
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="{{ form.notes.id_for_label }}">Notas del pedido</label>
+            <textarea name="notes" id="{{ form.notes.id_for_label }}" class="form-control" rows="3"
+                      placeholder="Instrucciones especiales de entrega...">{{ form.notes.value|default:'' }}</textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-full" style="margin-top:1rem;">
+            Continuar al pago →
+          </button>
+        </form>
+      </div>
+
+      <!-- RESUMEN -->
+      <div>
+        <div class="cart-summary">
+          <h3 style="margin-bottom:1.5rem;font-size:1.1rem;">Resumen del pedido</h3>
+
+          {% for item in cart %}
+          <div style="display:flex;gap:1rem;align-items:center;padding:.75rem 0;border-bottom:1px solid var(--color-gray-200);">
+            <div style="width:56px;height:70px;flex-shrink:0;border-radius:var(--radius-sm);overflow:hidden;background:var(--color-gray-100);">
+              {% if item.image_url %}
+              <img src="{{ item.image_url }}" alt="{{ item.product_name }}" style="width:100%;height:100%;object-fit:cover;">
+              {% endif %}
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:.88rem;color:var(--color-brown);font-family:var(--font-heading);font-style:italic;">{{ item.product_name }}</div>
+              {% if item.size or item.color %}
+              <div style="font-size:.76rem;color:var(--color-gray-500);">{% if item.color %}{{ item.color }}{% endif %}{% if item.size %} / {{ item.size }}{% endif %}</div>
+              {% endif %}
+              <div style="font-size:.76rem;color:var(--color-gray-500);">x{{ item.quantity }}</div>
+            </div>
+            <div style="font-size:.92rem;color:var(--color-brown);white-space:nowrap;">{{ item.total|cop }}</div>
+          </div>
+          {% endfor %}
+
+          <div class="cart-summary-row" style="margin-top:.5rem;">
+            <span>Subtotal</span>
+            <span>{{ cart.get_subtotal|cop_full }}</span>
+          </div>
+          <div class="cart-summary-row">
+            <span>Envío</span>
+            <span>{% if cart.get_shipping_cost == 0 %}<span style="color:var(--color-pink);">Gratis</span>{% else %}{{ cart.get_shipping_cost|cop_full }}{% endif %}</span>
+          </div>
+          <div class="cart-summary-row cart-summary-total">
+            <span>Total</span>
+            <span style="font-family:var(--font-body);font-style:normal;">{{ cart.get_total|cop_full }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

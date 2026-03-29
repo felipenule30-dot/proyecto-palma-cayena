@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Preguntas frecuentes — Palma Cayena{% endblock %}
+{% block navbar_class %}scrolled{% endblock %}
+
+{% block extra_css %}
+<style>
+.faq-item { border-bottom: 1px solid var(--color-gray-200); }
+.faq-question {
+  width: 100%; text-align: left; padding: 1.25rem 0;
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--font-body); font-size: .95rem; color: var(--color-brown);
+  background: none; border: none; cursor: pointer;
+}
+.faq-question .faq-icon { transition: transform .3s ease; font-size: 1.25rem; color: var(--color-pink); }
+.faq-item.open .faq-question .faq-icon { transform: rotate(45deg); }
+.faq-answer { display: none; padding: 0 0 1.25rem; color: var(--color-brown-light); line-height: 1.8; font-size: .93rem; }
+.faq-item.open .faq-answer { display: block; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="padding-top:72px;">
+  <div class="page-hero">
+    <div class="container">
+      <h1>Preguntas frecuentes</h1>
+      <p class="lead">Todo lo que necesitas saber antes de tu compra.</p>
+    </div>
+  </div>
+
+  <div class="container section">
+    <div style="max-width:760px;margin:0 auto;">
+
+      {% if faq_by_category %}
+        {% for category, faqs in faq_by_category.items %}
+        <div style="margin-bottom:3rem;">
+          <h2 style="font-size:1.3rem;margin-bottom:1.5rem;color:var(--color-pink);">{{ category }}</h2>
+          {% for faq in faqs %}
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              {{ faq.question }}
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">{{ faq.answer }}</div>
+          </div>
+          {% endfor %}
+        </div>
+        {% endfor %}
+      {% else %}
+      <!-- FAQs por defecto -->
+      <div style="margin-bottom:3rem;">
+        <h2 style="font-size:1.3rem;margin-bottom:1.5rem;color:var(--color-pink);">Envíos</h2>
+        <div class="faq-item">
+          <button class="faq-question">¿Cuánto tarda el envío? <span class="faq-icon">+</span></button>
+          <div class="faq-answer">Los pedidos se procesan en 1-2 días hábiles. El envío nacional tarda entre 3 y 7 días hábiles dependiendo de tu ciudad.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">¿El envío es gratis? <span class="faq-icon">+</span></button>
+          <div class="faq-answer">Sí, los envíos son gratis en compras mayores a $250.000 COP. Para pedidos menores, el costo de envío es de $15.000 COP.</div>
+        </div>
+      </div>
+      <div style="margin-bottom:3rem;">
+        <h2 style="font-size:1.3rem;margin-bottom:1.5rem;color:var(--color-pink);">Tallas</h2>
+        <div class="faq-item">
+          <button class="faq-question">¿Cómo sé qué talla elegir? <span class="faq-icon">+</span></button>
+          <div class="faq-answer">Te recomendamos medir tu busto, cintura y cadera y comparar con nuestra guía de tallas. Si estás entre dos tallas, te sugerimos elegir la mayor para mayor comodidad.</div>
+        </div>
+      </div>
+      <div style="margin-bottom:3rem;">
+        <h2 style="font-size:1.3rem;margin-bottom:1.5rem;color:var(--color-pink);">Pagos</h2>
+        <div class="faq-item">
+          <button class="faq-question">¿Qué métodos de pago aceptan? <span class="faq-icon">+</span></button>
+          <div class="faq-answer">Aceptamos tarjetas de crédito y débito, PSE, Nequi y Daviplata a través de Wompi, la plataforma de pagos más segura de Colombia.</div>
+        </div>
+      </div>
+      <div>
+        <h2 style="font-size:1.3rem;margin-bottom:1.5rem;color:var(--color-pink);">Cambios y devoluciones</h2>
+        <div class="faq-item">
+          <button class="faq-question">¿Puedo cambiar mi pedido? <span class="faq-icon">+</span></button>
+          <div class="faq-answer">Tienes 30 días desde la fecha de recepción para solicitar un cambio o devolución, siempre que el producto esté en perfectas condiciones con su etiqueta original.</div>
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}

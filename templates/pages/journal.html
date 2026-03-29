@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Journal — Palma Cayena{% endblock %}
+{% block meta_description %}Historias, inspiración y el universo Palma Cayena.{% endblock %}
+{% block navbar_class %}scrolled{% endblock %}
+
+{% block content %}
+<div style="padding-top:72px;">
+  <div class="page-hero">
+    <div class="container">
+      <h1>Journal</h1>
+      <p class="lead">Historias, inspiración y el universo Palma Cayena.</p>
+    </div>
+  </div>
+
+  <div class="container section">
+    {% if posts %}
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:2.5rem;">
+      {% for post in posts %}
+      <article class="product-card fade-in" style="background:var(--color-white);">
+        <a href="{{ post.get_absolute_url }}">
+          {% if post.cover_image %}
+          <div style="aspect-ratio:16/9;overflow:hidden;">
+            <img src="{{ post.cover_image.url }}" alt="{{ post.cover_image_alt|default:post.title }}"
+                 style="width:100%;height:100%;object-fit:cover;transition:transform .6s ease;">
+          </div>
+          {% else %}
+          <div style="aspect-ratio:16/9;background:linear-gradient(135deg,#EDE3D8,#C855B8);"></div>
+          {% endif %}
+        </a>
+        <div style="padding:1.5rem;">
+          {% if post.published_at %}
+          <div class="caption text-pink" style="margin-bottom:.5rem;">{{ post.published_at|date:"d M Y" }}</div>
+          {% endif %}
+          <h3 style="font-size:1.2rem;margin-bottom:.75rem;">
+            <a href="{{ post.get_absolute_url }}" style="color:var(--color-brown);">{{ post.title }}</a>
+          </h3>
+          {% if post.excerpt %}
+          <p style="font-size:.88rem;color:var(--color-brown-light);line-height:1.7;margin-bottom:1rem;">{{ post.excerpt|truncatewords:20 }}</p>
+          {% endif %}
+          <a href="{{ post.get_absolute_url }}" class="caption text-pink">Leer más →</a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <h3>Próximamente</h3>
+      <p>Estamos preparando historias increíbles para ti.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

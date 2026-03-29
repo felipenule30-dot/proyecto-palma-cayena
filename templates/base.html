@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% load static %}
+
+  <title>{% block title %}{{ meta_title|default:"Palma Cayena — Vestidos de baño del Caribe" }}{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}{{ meta_description|default:site_config.default_meta_description }}{% endblock %}">
+
+  <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="{{ meta_title|default:'Palma Cayena' }}">
+  <meta property="og:description" content="{{ meta_description|default:site_config.default_meta_description }}">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:site_name" content="Palma Cayena">
+  {% block og_image %}<meta property="og:image" content="{% static 'images/brand/og-default.jpg' %}">{% endblock %}
+  <meta name="twitter:card" content="summary_large_image">
+
+  {% if site_config.favicon %}<link rel="icon" href="{{ site_config.favicon.url }}">{% endif %}
+
+  <!-- Google Fonts: Quicksand -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'css/palma.css' %}">
+  {% block extra_css %}{% endblock %}
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ClothingStore",
+    "name": "Palma Cayena",
+    "description": "Vestidos de baño del Caribe colombiano",
+    "url": "{{ request.scheme }}://{{ request.get_host }}"
+  }
+  </script>
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+
+  <a href="#main-content" class="skip-link">Saltar al contenido</a>
+
+  <!-- NAVBAR -->
+  <header class="navbar {% block navbar_class %}{% endblock %}" role="banner">
+    <div class="navbar-inner">
+      <a href="{% url 'pages:home' %}" class="navbar-logo" aria-label="Palma Cayena — Inicio">
+        <span class="logo-initial">P</span><span>alma Cayena</span>
+      </a>
+
+      <nav class="navbar-nav" aria-label="Navegación principal">
+        <a href="{% url 'shop:list' %}" {% if request.resolver_match.namespace == 'shop' %}class="active"{% endif %}>Tienda</a>
+        <a href="{% url 'pages:about' %}" {% if request.resolver_match.url_name == 'about' %}class="active"{% endif %}>Nosotras</a>
+        <a href="{% url 'pages:journal' %}" {% if request.resolver_match.url_name == 'journal' %}class="active"{% endif %}>Journal</a>
+        <a href="{% url 'pages:contact' %}" {% if request.resolver_match.url_name == 'contact' %}class="active"{% endif %}>Contacto</a>
+      </nav>
+
+      <div class="navbar-actions">
+        <a href="{% url 'cart:detail' %}" class="cart-btn" aria-label="Carrito de compras">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          <span class="cart-badge" {% if not cart %}style="display:none"{% endif %}>{{ cart|length }}</span>
+        </a>
+        <button class="hamburger" aria-label="Abrir menú" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" role="dialog" aria-label="Menú de navegación">
+    <button class="mobile-menu-close" aria-label="Cerrar menú">✕</button>
+    <a href="{% url 'shop:list' %}">Tienda</a>
+    <a href="{% url 'pages:about' %}">Nosotras</a>
+    <a href="{% url 'pages:journal' %}">Journal</a>
+    <a href="{% url 'pages:contact' %}">Contacto</a>
+    <a href="{% url 'cart:detail' %}">Carrito ({{ cart|length }})</a>
+  </div>
+
+  <!-- Messages -->
+  {% if messages %}
+  <div class="container django-messages" style="padding-top:5.5rem;">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags|default:'info' }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <main id="main-content" role="main">
+    {% block content %}{% endblock %}
+  </main>
+
+  {% block newsletter %}
+  {% include 'partials/newsletter.html' %}
+  {% endblock %}
+
+  <!-- FOOTER -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="{% url 'pages:home' %}" class="footer-logo">Palma Cayena</a>
+          <p class="footer-tagline">{{ site_config.site_tagline|default:"Nacida del Caribe. Diseñada para la mujer que lleva el mar adentro." }}</p>
+          <div class="footer-social">
+            {% for social in social_links %}
+            <a href="{{ social.url }}" target="_blank" rel="noopener noreferrer" aria-label="{{ social.get_platform_display }}">
+              {% if social.platform == 'instagram' %}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+              {% elif social.platform == 'tiktok' %}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.84a8.21 8.21 0 004.8 1.53V6.9a4.85 4.85 0 01-1.03-.21z"/></svg>
+              {% else %}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/></svg>
+              {% endif %}
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+        <div>
+          <h4 class="footer-col-title">Tienda</h4>
+          <nav class="footer-nav">
+            <a href="{% url 'shop:list' %}">Todos los productos</a>
+            <a href="{% url 'shop:list' %}?orden=recientes">Nuevos</a>
+            <a href="{% url 'shop:list' %}?orden=destacados">Destacados</a>
+          </nav>
+        </div>
+        <div>
+          <h4 class="footer-col-title">Ayuda</h4>
+          <nav class="footer-nav">
+            <a href="{% url 'orders:tracking' %}">Seguimiento de pedido</a>
+            <a href="{% url 'pages:shipping' %}">Envíos</a>
+            <a href="{% url 'pages:returns' %}">Cambios y devoluciones</a>
+            <a href="{% url 'pages:faq' %}">Preguntas frecuentes</a>
+            <a href="{% url 'pages:contact' %}">Contacto</a>
+          </nav>
+        </div>
+        <div>
+          <h4 class="footer-col-title">Contacto</h4>
+          <nav class="footer-nav">
+            {% if site_config.city %}<span>{{ site_config.city }}</span>{% endif %}
+            {% if site_config.email %}<a href="mailto:{{ site_config.email }}">{{ site_config.email }}</a>{% endif %}
+            {% if site_config.phone %}<a href="tel:{{ site_config.phone }}">{{ site_config.phone }}</a>{% endif %}
+          </nav>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copy">© {% now "Y" %} Palma Cayena. Todos los derechos reservados.</p>
+        <nav style="display:flex;gap:1.5rem;">
+          <a href="{% url 'pages:terms' %}" class="footer-copy">Términos</a>
+          <a href="{% url 'pages:privacy' %}" class="footer-copy">Privacidad</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{% static 'js/palma.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static currency %}
+
+{% block title %}¡Pedido confirmado! — Palma Cayena{% endblock %}
+{% block navbar_class %}scrolled{% endblock %}
+{% block newsletter %}{% endblock %}
+
+{% block content %}
+<div style="padding-top:72px;">
+  <div class="container section">
+    <div style="max-width:680px;margin:0 auto;text-align:center;">
+
+      <!-- Ícono check -->
+      <div style="width:80px;height:80px;background:var(--color-cream-dark);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 2rem;">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--color-pink)" stroke-width="1.5">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+
+      <span class="caption text-pink" style="display:block;margin-bottom:.75rem;">¡Gracias por tu compra!</span>
+      <h1 style="margin-bottom:.75rem;">Pedido confirmado</h1>
+      <p class="lead" style="margin-bottom:.5rem;">Tu número de pedido es <strong>#{{ order.order_number }}</strong></p>
+      <p style="color:var(--color-brown-light);margin-bottom:3rem;">
+        Recibirás una confirmación en <strong>{{ order.email }}</strong> con todos los detalles.
+      </p>
+
+      <!-- Detalles del pedido -->
+      <div class="cart-summary" style="text-align:left;margin-bottom:2rem;">
+        <h3 style="margin-bottom:1.5rem;font-size:1rem;">Detalles del pedido</h3>
+
+        {% for item in order.items.all %}
+        <div style="display:flex;gap:1rem;align-items:center;padding:.75rem 0;border-bottom:1px solid var(--color-gray-200);">
+          <div style="width:56px;height:70px;flex-shrink:0;border-radius:var(--radius-sm);overflow:hidden;background:var(--color-gray-100);">
+            {% if item.image_url %}
+            <img src="{{ item.image_url }}" alt="{{ item.product_name }}" style="width:100%;height:100%;object-fit:cover;">
+            {% endif %}
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:.9rem;font-family:var(--font-heading);font-style:italic;color:var(--color-brown);">{{ item.product_name }}</div>
+            {% if item.variant_info %}<div style="font-size:.76rem;color:var(--color-gray-500);">{{ item.variant_info }}</div>{% endif %}
+            <div style="font-size:.76rem;color:var(--color-gray-500);">Cantidad: {{ item.quantity }}</div>
+          </div>
+          <div style="font-size:.92rem;color:var(--color-brown);">{{ item.total_price|cop }}</div>
+        </div>
+        {% endfor %}
+
+        <div class="cart-summary-row" style="margin-top:.5rem;">
+          <span>Subtotal</span><span>{{ order.subtotal|cop_full }}</span>
+        </div>
+        <div class="cart-summary-row">
+          <span>Envío</span>
+          <span>{% if order.shipping_cost == 0 %}<span style="color:var(--color-pink);">Gratis</span>{% else %}{{ order.shipping_cost|cop_full }}{% endif %}</span>
+        </div>
+        <div class="cart-summary-row cart-summary-total">
+          <span>Total</span><span style="font-family:var(--font-body);font-style:normal;">{{ order.total|cop_full }}</span>
+        </div>
+      </div>
+
+      <!-- Dirección de envío -->
+      <div class="cart-summary" style="text-align:left;margin-bottom:2rem;">
+        <h3 style="margin-bottom:1rem;font-size:1rem;">Enviando a</h3>
+        <p style="font-size:.9rem;color:var(--color-brown-light);line-height:1.8;">
+          {{ order.full_name }}<br>
+          {{ order.address }}<br>
+          {{ order.city }}{% if order.department %}, {{ order.department }}{% endif %}<br>
+          {{ order.country }}<br>
+          {{ order.email }} · {{ order.phone }}
+        </p>
+      </div>
+
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <a href="{% url 'orders:tracking' %}" class="btn btn-outline">Rastrear mi pedido</a>
+        <a href="{% url 'shop:list' %}" class="btn btn-primary">Seguir comprando</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

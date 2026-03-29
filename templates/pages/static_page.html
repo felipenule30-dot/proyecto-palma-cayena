@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ meta_title|default:page.title }} — Palma Cayena{% endblock %}
+{% block navbar_class %}scrolled{% endblock %}
+
+{% block content %}
+<div style="padding-top:72px;">
+
+  {% if page and page.hero_image %}
+  <div style="position:relative;height:40vh;min-height:280px;overflow:hidden;">
+    <img src="{{ page.hero_image.url }}" alt="{{ page.hero_image_alt|default:page.title }}"
+         style="width:100%;height:100%;object-fit:cover;">
+    <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(58,40,32,.45),transparent 60%);"></div>
+    <div style="position:absolute;bottom:2rem;left:0;right:0;text-align:center;">
+      <h1 style="color:var(--color-cream);">{{ page.title }}</h1>
+    </div>
+  </div>
+  {% else %}
+  <div class="page-hero">
+    <div class="container">
+      <h1>{% if page %}{{ page.title }}{% else %}Página{% endif %}</h1>
+      {% if page and page.subtitle %}<p class="lead">{{ page.subtitle }}</p>{% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="container section">
+    <div class="container-narrow">
+      {% if page and page.content %}
+      <div style="color:var(--color-brown-light);line-height:1.9;font-size:1rem;">
+        {{ page.content|safe }}
+      </div>
+      {% else %}
+      <p class="text-center" style="color:var(--color-gray-500);">Contenido próximamente.</p>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}

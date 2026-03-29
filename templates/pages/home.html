@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Palma Cayena — Vestidos de baño del Caribe Colombiano{% endblock %}
+{% block meta_description %}Descubre Palma Cayena, vestidos de baño diseñados en el corazón del Caribe colombiano. Feminidad, sofisticación y el espíritu de Cartagena en cada pieza.{% endblock %}
+{% block navbar_class %}{% if hero %}{% else %}scrolled{% endif %}{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero" aria-label="Hero principal">
+  <div class="hero-media">
+    {% if hero and hero.video_url %}
+    <video autoplay muted loop playsinline {% if hero.image %}poster="{{ hero.image.url }}"{% endif %}>
+      <source src="{{ hero.video_url }}" type="video/mp4">
+    </video>
+    {% elif hero and hero.image %}
+    <img src="{{ hero.image.url }}" alt="{{ hero.image_alt|default:'Palma Cayena' }}" loading="eager" fetchpriority="high">
+    {% else %}
+    <div style="width:100%;height:100%;background:linear-gradient(160deg,#3A2820 0%,#6B4E43 45%,#C855B8 100%);"></div>
+    {% endif %}
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">{{ site_config.city|default:"Cartagena, Colombia" }}</p>
+    <h1 class="hero-title">
+      {% if hero %}{{ hero.title }}{% else %}Naces del mar,<br>vives en él.{% endif %}
+    </h1>
+    <p class="hero-subtitle">
+      {% if hero %}{{ hero.subtitle }}{% else %}Vestidos de baño para la mujer que lleva el Caribe en la piel. Diseño editorial, artesanía colombiana.{% endif %}
+    </p>
+    <div class="hero-cta">
+      <a href="{% if hero %}{{ hero.cta_url }}{% else %}{% url 'shop:list' %}{% endif %}" class="btn btn-outline-cream">
+        {% if hero %}{{ hero.cta_text }}{% else %}Explorar colección{% endif %}
+      </a>
+      <a href="{% url 'pages:about' %}" class="btn btn-outline-cream" style="opacity:.65;">Nuestra historia</a>
+    </div>
+  </div>
+  <div class="hero-scroll" aria-hidden="true">
+    <span>Scroll</span>
+    <div class="hero-scroll-line"></div>
+  </div>
+</section>
+
+<!-- COLECCIÓN DESTACADA -->
+{% if featured_collection %}
+<section class="section bg-cream-dark">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;">
+      <div class="fade-in">
+        {% if featured_collection.image %}
+        <img src="{{ featured_collection.image.url }}"
+             alt="{{ featured_collection.image_alt|default:featured_collection.name }}"
+             style="width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:var(--radius-md);">
+        {% else %}
+        <div style="width:100%;aspect-ratio:4/5;background:linear-gradient(135deg,#C855B8,#BC0E2C);border-radius:var(--radius-md);"></div>
+        {% endif %}
+      </div>
+      <div class="fade-in">
+        <span class="caption text-pink" style="display:block;margin-bottom:1rem;">Colección destacada</span>
+        <h2>{{ featured_collection.name }}</h2>
+        <div class="divider divider-left"></div>
+        <p class="lead">{{ featured_collection.description }}</p>
+        <a href="{{ featured_collection.get_absolute_url }}" class="btn btn-primary" style="margin-top:2rem;">Ver colección</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- CATEGORÍAS -->
+{% if categories %}
+<section class="section">
+  <div class="container">
+    <div class="section-title fade-in">
+      <span class="eyebrow">Explora</span>
+      <h2>Encuentra tu estilo</h2>
+    </div>
+    <div class="categories-grid">
+      {% for category in categories %}
+      <a href="{{ category.get_absolute_url }}" class="category-card fade-in">
+        {% if category.image %}
+        <img src="{{ category.image.url }}" alt="{{ category.image_alt|default:category.name }}" loading="lazy">
+        {% else %}
+        <div style="width:100%;height:100%;background:linear-gradient(135deg,#3A2820,#C855B8);"></div>
+        {% endif %}
+        <div class="category-card-overlay"></div>
+        <div class="category-card-label">
+          <span>Categoría</span>
+          <h3>{{ category.name }}</h3>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- PRODUCTOS DESTACADOS -->
+{% if featured_products %}
+<section class="section bg-cream-dark">
+  <div class="container">
+    <div class="section-title fade-in">
+      <span class="eyebrow">Selección editorial</span>
+      <h2>Favoritas de la temporada</h2>
+      <p>Piezas diseñadas para brillar desde el primer día de playa.</p>
+    </div>
+    <div class="products-grid">
+      {% for product in featured_products %}
+      {% include 'partials/product_card.html' with product=product %}
+      {% endfor %}
+    </div>
+    <div class="text-center fade-in" style="margin-top:3rem;">
+      <a href="{% url 'shop:list' %}" class="btn btn-outline">Ver toda la tienda</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- STORYTELLING -->
+{% for block in blocks %}{% if block.block_type == 'storytelling' %}
+<section class="storytelling-block">
+  {% if block.image %}
+  <div class="storytelling-media">
+    <img src="{{ block.image.url }}" alt="{{ block.image_alt|default:'Palma Cayena' }}" loading="lazy">
+  </div>
+  {% else %}
+  <div class="storytelling-media" style="background:linear-gradient(135deg,#C855B8,#BC0E2C);min-height:500px;"></div>
+  {% endif %}
+  <div class="storytelling-content">
+    <span class="storytelling-eyebrow">{{ block.subtitle|default:"Nuestra esencia" }}</span>
+    <h2 class="storytelling-title">{{ block.title|default:"Born from the idea that clothing is not just fabric" }}</h2>
+    <p class="storytelling-text">{{ block.body_text|default:"Palma Cayena nació de la idea de que un vestido de baño puede ser una obra de arte. Cada pieza está inspirada en los colores del Caribe colombiano, la fuerza del mar y la feminidad sin límites de la mujer de hoy." }}</p>
+    <a href="{{ block.cta_url|default:'#' }}" class="btn btn-primary">{{ block.cta_text|default:"Conocer nuestra historia" }}</a>
+  </div>
+</section>
+{% endif %}{% empty %}
+<section class="storytelling-block">
+  <div class="storytelling-media" style="background:linear-gradient(135deg,#C855B8,#BC0E2C);min-height:500px;"></div>
+  <div class="storytelling-content">
+    <span class="storytelling-eyebrow">Nuestra esencia</span>
+    <h2 class="storytelling-title">Born from the idea that clothing is not just fabric</h2>
+    <p class="storytelling-text">Palma Cayena nació de la idea de que un vestido de baño puede ser una obra de arte. Cada pieza está inspirada en los colores del Caribe colombiano, la fuerza del mar y la feminidad sin límites de la mujer de hoy.</p>
+    <a href="{% url 'pages:about' %}" class="btn btn-primary">Conocer nuestra historia</a>
+  </div>
+</section>
+{% endfor %}
+
+<!-- NUEVOS PRODUCTOS -->
+{% if new_products %}
+<section class="section">
+  <div class="container">
+    <div class="section-title fade-in">
+      <span class="eyebrow">Recién llegados</span>
+      <h2>New in</h2>
+    </div>
+    <div class="products-grid">
+      {% for product in new_products %}
+      {% include 'partials/product_card.html' with product=product %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- BENEFICIOS -->
+<section class="section-sm bg-cream-dark">
+  <div class="container">
+    <div class="benefits-grid">
+      {% if benefits %}
+        {% for benefit in benefits %}
+        <div class="benefit-item fade-in">
+          <div class="benefit-icon" aria-hidden="true">
+            {% if benefit.icon == 'truck' %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            {% elif benefit.icon == 'shield' %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            {% elif benefit.icon == 'refresh' %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+            {% elif benefit.icon == 'heart' %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            {% else %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>{% endif %}
+          </div>
+          <h3 class="benefit-title">{{ benefit.title }}</h3>
+          <p class="benefit-desc">{{ benefit.description }}</p>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="benefit-item fade-in">
+          <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+          <h3 class="benefit-title">Envío a todo Colombia</h3>
+          <p class="benefit-desc">Gratis en compras mayores a $250.000 COP.</p>
+        </div>
+        <div class="benefit-item fade-in">
+          <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <h3 class="benefit-title">Pago 100% seguro</h3>
+          <p class="benefit-desc">Procesamos tus pagos con Wompi.</p>
+        </div>
+        <div class="benefit-item fade-in">
+          <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg></div>
+          <h3 class="benefit-title">Cambios sin complicaciones</h3>
+          <p class="benefit-desc">30 días para cambios y devoluciones.</p>
+        </div>
+        <div class="benefit-item fade-in">
+          <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
+          <h3 class="benefit-title">Hecho con amor</h3>
+          <p class="benefit-desc">Calidad artesanal que se siente desde la primera vez.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIOS -->
+{% if testimonials %}
+<section class="section">
+  <div class="container">
+    <div class="section-title fade-in">
+      <span class="eyebrow">Comunidad</span>
+      <h2>Lo que dicen ellas</h2>
+    </div>
+    <div class="testimonials-grid">
+      {% for t in testimonials %}
+      <div class="testimonial-card fade-in">
+        <div class="testimonial-stars">{% for i in "12345"|make_list %}{% if forloop.counter <= t.rating %}★{% else %}☆{% endif %}{% endfor %}</div>
+        <p class="testimonial-text">"{{ t.text }}"</p>
+        <div>
+          <div class="testimonial-author">{{ t.name }}</div>
+          {% if t.location %}<div class="testimonial-location">{{ t.location }}</div>{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- CTA FINAL -->
+<section style="background:var(--color-brown);padding:var(--space-lg) 0;text-align:center;">
+  <div class="container">
+    <span class="caption" style="color:rgba(244,237,228,.45);display:block;margin-bottom:1rem;">Nueva temporada</span>
+    <h2 class="font-script text-cream" style="font-size:clamp(2.2rem,5vw,4rem);font-style:normal;margin-bottom:1.5rem;">El Caribe es un estado de ánimo.</h2>
+    <a href="{% url 'shop:list' %}" class="btn btn-outline-cream">Explorar la tienda</a>
+  </div>
+</section>
+
+{% endblock %}

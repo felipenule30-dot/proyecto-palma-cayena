@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ meta_title }}{% endblock %}
+{% block meta_description %}{{ meta_description }}{% endblock %}
+{% block navbar_class %}scrolled{% endblock %}
+
+{% block content %}
+<div style="padding-top:72px;">
+
+  {% if post.cover_image %}
+  <div style="position:relative;height:55vh;min-height:360px;overflow:hidden;">
+    <img src="{{ post.cover_image.url }}" alt="{{ post.cover_image_alt|default:post.title }}"
+         style="width:100%;height:100%;object-fit:cover;">
+    <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(58,40,32,.55),transparent 55%);"></div>
+    <div style="position:absolute;bottom:3rem;left:0;right:0;text-align:center;padding:0 2rem;">
+      {% if post.published_at %}
+      <div class="caption" style="color:rgba(244,237,228,.65);margin-bottom:.75rem;">{{ post.published_at|date:"d M Y" }} · {{ post.author }}</div>
+      {% endif %}
+      <h1 style="color:var(--color-cream);max-width:700px;margin:0 auto;">{{ post.title }}</h1>
+    </div>
+  </div>
+  {% else %}
+  <div class="page-hero">
+    <div class="container">
+      {% if post.published_at %}
+      <div class="caption text-pink" style="margin-bottom:.75rem;">{{ post.published_at|date:"d M Y" }}</div>
+      {% endif %}
+      <h1>{{ post.title }}</h1>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="container section">
+    <div class="container-narrow">
+
+      <nav class="breadcrumb" style="margin-bottom:2rem;">
+        <a href="{% url 'pages:journal' %}">Journal</a>
+        <span class="breadcrumb-sep">/</span>
+        <span>{{ post.title|truncatewords:5 }}</span>
+      </nav>
+
+      {% if post.excerpt %}
+      <p class="lead" style="margin-bottom:2.5rem;border-left:3px solid var(--color-pink);padding-left:1.25rem;">
+        {{ post.excerpt }}
+      </p>
+      {% endif %}
+
+      <div style="color:var(--color-brown-light);line-height:1.9;font-size:1.02rem;">
+        {{ post.content|safe }}
+      </div>
+
+      <div style="margin-top:3rem;padding-top:2rem;border-top:1px solid var(--color-gray-200);">
+        <a href="{% url 'pages:journal' %}" class="btn btn-outline btn-sm">← Volver al Journal</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

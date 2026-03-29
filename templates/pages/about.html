@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Nuestra historia — Palma Cayena{% endblock %}
+{% block meta_description %}Conoce la historia de Palma Cayena, marca de vestidos de baño nacida en el Caribe colombiano.{% endblock %}
+{% block navbar_class %}scrolled{% endblock %}
+
+{% block content %}
+<div style="padding-top:72px;">
+
+  <!-- Hero -->
+  <div style="position:relative;height:60vh;min-height:400px;display:flex;align-items:flex-end;overflow:hidden;">
+    {% if page and page.hero_image %}
+    <img src="{{ page.hero_image.url }}" alt="{{ page.hero_image_alt|default:'Palma Cayena — Nuestra historia' }}"
+         style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+    {% else %}
+    <div style="position:absolute;inset:0;background:linear-gradient(135deg,#3A2820 0%,#C855B8 100%);"></div>
+    {% endif %}
+    <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(58,40,32,.55),transparent 60%);"></div>
+    <div style="position:relative;z-index:2;padding:3rem 2rem;max-width:1280px;width:100%;margin:0 auto;">
+      <span class="caption" style="color:rgba(244,237,228,.6);display:block;margin-bottom:.75rem;">Palma Cayena</span>
+      <h1 style="color:var(--color-cream);font-size:clamp(2.5rem,5vw,4.5rem);">Nuestra historia</h1>
+    </div>
+  </div>
+
+  <!-- Contenido principal -->
+  {% if page and page.content %}
+  <div class="container section">
+    <div class="container-narrow">
+      {% if page.subtitle %}<p class="lead text-center" style="margin-bottom:3rem;">{{ page.subtitle }}</p>{% endif %}
+      <div style="color:var(--color-brown-light);line-height:1.9;font-size:1.05rem;">{{ page.content|safe }}</div>
+    </div>
+  </div>
+  {% else %}
+  <!-- Contenido por defecto -->
+  <div class="container section">
+    <div class="container-narrow">
+      <p class="lead text-center" style="margin-bottom:3rem;">
+        Nacida del Caribe. Diseñada para la mujer que lleva el mar adentro.
+      </p>
+      <div class="divider"></div>
+    </div>
+  </div>
+
+  <section class="storytelling-block">
+    <div class="storytelling-media" style="background:linear-gradient(135deg,#EDE3D8,#C855B8);min-height:500px;"></div>
+    <div class="storytelling-content">
+      <span class="storytelling-eyebrow">Los comienzos</span>
+      <h2 class="storytelling-title">El Caribe como lienzo</h2>
+      <p class="storytelling-text">
+        Palma Cayena nació en Cartagena, donde el Caribe enseña que la belleza no necesita explicación.
+        Cada pieza es una conversación entre el mar, el sol y la feminidad contemporánea. Diseñamos para
+        la mujer que camina descalza sobre la arena con la misma seguridad con la que conquista el mundo.
+      </p>
+    </div>
+  </section>
+
+  <section class="storytelling-block" style="flex-direction:row-reverse;">
+    <div class="storytelling-media" style="background:linear-gradient(135deg,#BC0E2C,#3A2820);min-height:500px;"></div>
+    <div class="storytelling-content">
+      <span class="storytelling-eyebrow">Nuestra filosofía</span>
+      <h2 class="storytelling-title">Clothing is not just fabric</h2>
+      <p class="storytelling-text">
+        Creemos que lo que vistes es una extensión de quién eres. Por eso cada vestido de baño está
+        pensado como una pieza editorial: con historia, con alma, con identidad propia.
+        No hacemos ropa de temporada. Hacemos prendas que se recuerdan.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-title fade-in">
+        <span class="eyebrow">Nuestra promesa</span>
+        <h2>Lo que nos mueve</h2>
+      </div>
+      <div class="benefits-grid">
+        <div class="benefit-item fade-in">
+          <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <h3 class="benefit-title">Diseño con propósito</h3>
+          <p class="benefit-desc">Cada línea, cada corte, cada color tiene una razón de ser. Nada es accidental.</p>
+        </div>
+        <div class="benefit-item fade-in">
+          <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
+          <h3 class="benefit-title">Hecho en Colombia</h3>
+          <p class="benefit-desc">Orgullosamente colombianas. Desde el diseño hasta la confección, todo nace aquí.</p>
+        </div>
+        <div class="benefit-item fade-in">
+          <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/></svg></div>
+          <h3 class="benefit-title">Para el mundo</h3>
+          <p class="benefit-desc">Empezamos en el Caribe pero soñamos con llevar Palma Cayena a cada playa del planeta.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+</div>
+{% endblock %}

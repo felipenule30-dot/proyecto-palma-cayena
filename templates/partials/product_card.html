@@ -1,0 +1,34 @@
+{% load static currency %}
+<article class="product-card fade-in">
+  <a href="{{ product.get_absolute_url }}" class="product-card-image" aria-label="{{ product.name }}">
+    {% with main_img=product.main_image %}
+    {% if main_img %}
+    <img src="{{ main_img.image.url }}" alt="{{ main_img.alt_text|default:product.name }}" loading="lazy">
+    {% else %}
+    <div style="width:100%;height:100%;background:linear-gradient(135deg,#EDE3D8,#C855B8);"></div>
+    {% endif %}
+    {% endwith %}
+    <div class="product-card-badges">
+      {% if product.is_new %}<span class="badge badge-new">New</span>{% endif %}
+      {% if product.is_on_sale %}<span class="badge badge-sale">-{{ product.discount_percentage }}%</span>{% endif %}
+      {% if product.is_featured and not product.is_new %}<span class="badge badge-featured">Fav</span>{% endif %}
+    </div>
+    <div class="product-card-action">
+      <span class="btn btn-primary btn-sm btn-full">Ver producto</span>
+    </div>
+  </a>
+  <div class="product-card-body">
+    {% if product.category %}
+    <div class="product-card-category">{{ product.category.name }}</div>
+    {% endif %}
+    <h3 class="product-card-name">
+      <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+    </h3>
+    <div class="product-card-price">
+      <span class="price-current">{{ product.price|cop }}</span>
+      {% if product.is_on_sale %}
+      <span class="price-compare">{{ product.compare_price|cop }}</span>
+      {% endif %}
+    </div>
+  </div>
+</article>

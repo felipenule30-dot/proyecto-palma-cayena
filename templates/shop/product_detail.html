@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% load static currency %}
+
+{% block title %}{{ meta_title }}{% endblock %}
+{% block meta_description %}{{ meta_description }}{% endblock %}
+{% block navbar_class %}scrolled{% endblock %}
+
+{% block og_image %}
+{% if product.og_image %}<meta property="og:image" content="{{ product.og_image.url }}">
+{% elif product.main_image %}<meta property="og:image" content="{{ product.main_image.image.url }}">{% endif %}
+{% endblock %}
+
+{% block extra_head %}
+<!-- JSON-LD Product -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "{{ product.name }}",
+  "description": "{{ product.short_description|escapejs }}",
+  "sku": "{{ product.sku }}",
+  "brand": {"@type": "Brand", "name": "Palma Cayena"},
+  "offers": {
+    "@type": "Offer",
+    "priceCurrency": "COP",
+    "price": "{{ product.price }}",
+    "availability": "{% if product.is_available %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}",
+    "url": "{{ request.build_absolute_uri }}"
+  }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div style="padding-top:72px;">
+  <div class="container section">
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+      <a href="{% url 'pages:home' %}">Inicio</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="{% url 'shop:list' %}">Tienda</a>
+      <span class="breadcrumb-sep">/</span>
+      {% if product.category %}
+      <a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a>
+      <span class="breadcrumb-sep">/</span>
+      {% endif %}
+      <span>{{ product.name }}</span>
+    </nav>
+
+    <!-- Layout principal -->
+    <div class="product-detail-layout">
+
+      <!-- GALERÍA -->
+      <div>
+        <div class="product-gallery-main">
+          {% with main_img=product.main_image %}
+          {% if main_img %}
+          <img src="{{ main_img.image.url }}" alt="{{ main_img.alt_text|default:product.name }}" id="main-product-image" loading="eager">
+          {% else %}
+          <div style="width:100%;height:100%;background:linear-gradient(135deg,#EDE3D8,#C855B8);"></div>
+          {% endif %}
+          {% endwith %}
+        </div>
+        {% if product.images.count > 1 %}
+        <div class="product-gallery-thumbs">
+          {% for image in product.images.all %}
+          <div class="product-gallery-thumb {% if image.is_main %}active{% endif %}" data-src="{{ image.image.url }}">
+            <img src="{{ image.image.url }}" alt="{{ image.alt_text|default:product.name }}" loading="lazy">
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- INFO -->
+      <div class="product-info">
+        {% if product.category %}
+        <div class="product-info-category">{{ product.category.name }}</div>
+        {% endif %}
+
+        <h1 class="product-info-name">{{ product.name }}</h1>
+
+        <div class="product-info-price">
+          <span class="product-price-main">{{ product.price|cop_full }}</span>
+          {% if product.is_on_sale %}
+          <span class="price-compare">{{ product.compare_price|cop }}</span>
+          <span class="price-discount">-{{ product.discount_percentage }}%</span>
+          {% endif %}
+        </div>
+
+        {% if product.short_description %}
+        <p class="product-desc">{{ product.short_description }}</p>
+        {% endif %}
+
+        <!-- Formulario agregar al carrito -->
+        <form id="add-to-cart-form" method="post" action="{% url 'cart:add' %}">
+          {% csrf_token %}
+          <input type="hidden" name="variant_id" id="id_variant_id" value="">
+          <input type="hidden" name="quantity" value="1">
+
+          <!-- Colores -->
+          {% if colors %}
+          <div class="variant-selector">
+            <div class="variant-label">Color</div>
+            <div class="color-options">
+              {% for color_id, color_name, hex_code in colors %}
+              <div class="color-option" data-color-id="{{ color_id }}" title="{{ color_name }}"
+                   style="background:{{ hex_code|default:'#ccc' }};"
+                   role="button" tabindex="0" aria-label="{{ color_name }}"></div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- Tallas -->
+          {% if sizes %}
+          <div class="variant-selector">
+            <div class="variant-label">
+              Talla
+              <a href="{% url 'pages:faq' %}#tallas" class="caption text-pink" style="font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;">Guía de tallas</a>
+            </div>
+            <div class="size-options">
+              {% for size_id, size_name in sizes %}
+              <div class="size-option" data-size-id="{{ size_id }}" role="button" tabindex="0">{{ size_name }}</div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- Stock message -->
+          <p id="stock-message" style="font-size:.82rem;color:var(--color-gray-500);margin-bottom:1rem;min-height:1.2em;"></p>
+
+          <!-- Botones -->
+          <div class="add-to-cart-section">
+            <button type="submit" id="add-to-cart-btn" class="btn btn-primary btn-full"
+                    {% if not product.is_available %}disabled{% endif %}>
+              {% if product.is_available %}Agregar al carrito{% else %}Sin stock{% endif %}
+            </button>
+            <a href="{% url 'checkout:checkout' %}" class="btn btn-outline btn-full">Comprar ahora</a>
+          </div>
+        </form>
+
+        <!-- Detalles adicionales -->
+        {% if product.description or product.composition or product.care_instructions %}
+        <div style="margin-top:2rem;border-top:1px solid var(--color-gray-200);padding-top:2rem;">
+          {% if product.description %}
+          <details open style="margin-bottom:1rem;">
+            <summary style="cursor:pointer;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;padding:.75rem 0;list-style:none;display:flex;justify-content:space-between;align-items:center;color:var(--color-brown);">
+              Descripción <span>+</span>
+            </summary>
+            <p style="color:var(--color-brown-light);line-height:1.8;padding:.75rem 0;font-size:.95rem;">{{ product.description }}</p>
+          </details>
+          {% endif %}
+          {% if product.composition %}
+          <details style="margin-bottom:1rem;border-top:1px solid var(--color-gray-200);">
+            <summary style="cursor:pointer;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;padding:.75rem 0;list-style:none;display:flex;justify-content:space-between;align-items:center;color:var(--color-brown);">
+              Composición <span>+</span>
+            </summary>
+            <p style="color:var(--color-brown-light);padding:.75rem 0;font-size:.95rem;">{{ product.composition }}</p>
+          </details>
+          {% endif %}
+          {% if product.care_instructions %}
+          <details style="border-top:1px solid var(--color-gray-200);">
+            <summary style="cursor:pointer;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;padding:.75rem 0;list-style:none;display:flex;justify-content:space-between;align-items:center;color:var(--color-brown);">
+              Cuidados <span>+</span>
+            </summary>
+            <p style="color:var(--color-brown-light);padding:.75rem 0;font-size:.95rem;">{{ product.care_instructions }}</p>
+          </details>
+          {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Tags -->
+        {% if product.tags.all %}
+        <div style="margin-top:1.5rem;display:flex;flex-wrap:wrap;gap:.5rem;">
+          {% for tag in product.tags.all %}
+          <span class="badge badge-new" style="background:var(--color-gray-200);color:var(--color-brown);">{{ tag.name }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- PRODUCTOS RELACIONADOS -->
+    {% if related_products %}
+    <div style="margin-top:5rem;">
+      <div class="section-title fade-in">
+        <span class="eyebrow">También te puede gustar</span>
+        <h2>Más de la colección</h2>
+      </div>
+      <div class="products-grid">
+        {% for related in related_products %}
+        {% include 'partials/product_card.html' with product=related %}
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+<!-- Pasar variantes a JS -->
+<script>
+window.PALMA_VARIANTS = [
+  {% for variant in product.variants.all %}
+  {
+    id: {{ variant.id }},
+    size_id: {{ variant.size_id|default:"null" }},
+    color_id: {{ variant.color_id|default:"null" }},
+    stock: {{ variant.stock }},
+    price: "{{ variant.effective_price }}"
+  }{% if not forloop.last %},{% endif %}
+  {% endfor %}
+];
+</script>
+{% endblock %}

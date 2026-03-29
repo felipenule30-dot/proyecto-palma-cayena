@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static currency %}
+
+{% block title %}Carrito — Palma Cayena{% endblock %}
+{% block navbar_class %}scrolled{% endblock %}
+
+{% block content %}
+<div style="padding-top:72px;">
+  <div class="container section">
+
+    <div class="breadcrumb">
+      <a href="{% url 'pages:home' %}">Inicio</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>Carrito</span>
+    </div>
+
+    <h1 style="margin-bottom:2.5rem;">Tu carrito</h1>
+
+    {% if cart|length %}
+    <div class="cart-layout">
+
+      <!-- Items -->
+      <div>
+        {% for item in cart %}
+        <div class="cart-item">
+          <div class="cart-item-image">
+            {% if item.image_url %}
+            <img src="{{ item.image_url }}" alt="{{ item.product_name }}" loading="lazy">
+            {% else %}
+            <div style="width:100%;height:100%;background:linear-gradient(135deg,#EDE3D8,#C855B8);"></div>
+            {% endif %}
+          </div>
+          <div>
+            <div class="cart-item-name">
+              <a href="/tienda/producto/{{ item.product_slug }}/">{{ item.product_name }}</a>
+            </div>
+            <div class="cart-item-variant">
+              {% if item.color %}Color: {{ item.color }} &nbsp;|&nbsp; {% endif %}
+              {% if item.size %}Talla: {{ item.size }}{% endif %}
+            </div>
+            <div class="cart-item-variant">SKU: {{ item.sku }}</div>
+
+            <div class="qty-control" style="margin-top:.75rem;">
+              <button class="qty-btn" data-action="decrease" data-variant-id="{{ item.variant_id }}" aria-label="Disminuir">−</button>
+              <input type="number" class="qty-input" value="{{ item.quantity }}" min="1" readonly>
+              <button class="qty-btn" data-action="increase" data-variant-id="{{ item.variant_id }}" aria-label="Aumentar">+</button>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:1rem;color:var(--color-brown);margin-bottom:.75rem;">
+              {{ item.total|cop }}
+            </div>
+            <button class="cart-remove-btn caption text-pink" data-variant-id="{{ item.variant_id }}" style="cursor:pointer;background:none;border:none;font-family:inherit;">
+              Eliminar
+            </button>
+          </div>
+        </div>
+        {% endfor %}
+
+        <div style="margin-top:2rem;">
+          <a href="{% url 'shop:list' %}" class="btn btn-outline btn-sm">← Seguir comprando</a>
+        </div>
+      </div>
+
+      <!-- Resumen -->
+      <div class="cart-summary">
+        <h3 style="margin-bottom:1.5rem;font-size:1.1rem;">Resumen del pedido</h3>
+
+        {% csrf_token %}
+
+        <div class="cart-summary-row">
+          <span>Subtotal</span>
+          <span>{{ cart.get_subtotal|cop_full }}</span>
+        </div>
+        <div class="cart-summary-row">
+          <span>Envío</span>
+          <span>
+            {% if cart.get_shipping_cost == 0 %}
+            <span style="color:var(--color-pink);">Gratis</span>
+            {% else %}
+            {{ cart.get_shipping_cost|cop_full }}
+            {% endif %}
+          </span>
+        </div>
+        <div class="cart-summary-row cart-summary-total">
+          <span>Total</span>
+          <span style="font-family:var(--font-body);font-style:normal;">{{ cart.get_total|cop_full }}</span>
+        </div>
+
+        <a href="{% url 'checkout:checkout' %}" class="btn btn-primary btn-full" style="margin-top:1.5rem;">
+          Proceder al checkout →
+        </a>
+
+        <div style="margin-top:1.5rem;text-align:center;">
+          <p class="caption" style="margin-bottom:.75rem;">Métodos de pago aceptados</p>
+          <p style="font-size:.8rem;color:var(--color-gray-500);">Tarjetas, PSE, Nequi, Daviplata</p>
+        </div>
+      </div>
+
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--color-gray-300)" stroke-width="1" style="margin:0 auto 1.5rem;"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <h3>Tu carrito está vacío</h3>
+      <p>Todavía no has agregado ningún producto.</p>
+      <a href="{% url 'shop:list' %}" class="btn btn-primary" style="margin-top:1.5rem;">Explorar tienda</a>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

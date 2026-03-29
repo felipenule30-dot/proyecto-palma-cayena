@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contacto — Palma Cayena{% endblock %}
+{% block navbar_class %}scrolled{% endblock %}
+
+{% block content %}
+<div style="padding-top:72px;">
+  <div class="page-hero">
+    <div class="container">
+      <h1>Contacto</h1>
+      <p class="lead">¿Tienes preguntas? Estamos aquí para ayudarte.</p>
+    </div>
+  </div>
+
+  <div class="container section">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;">
+
+      <!-- Formulario -->
+      <div>
+        {% if success %}
+        <div class="alert alert-success" style="margin-bottom:2rem;">
+          ¡Mensaje recibido! Te responderemos pronto.
+        </div>
+        {% endif %}
+
+        <h2 style="margin-bottom:2rem;">Escríbenos</h2>
+        <form method="post">
+          {% csrf_token %}
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Nombre *</label>
+              <input type="text" name="name" class="form-control" placeholder="Tu nombre" required
+                     value="{{ form.name.value|default:'' }}">
+              {% if form.name.errors %}<div class="form-error">{{ form.name.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email *</label>
+              <input type="email" name="email" class="form-control" placeholder="hola@tucorreo.com" required
+                     value="{{ form.email.value|default:'' }}">
+              {% if form.email.errors %}<div class="form-error">{{ form.email.errors.0 }}</div>{% endif %}
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Teléfono</label>
+            <input type="tel" name="phone" class="form-control" placeholder="+57 300 000 0000"
+                   value="{{ form.phone.value|default:'' }}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Asunto *</label>
+            <input type="text" name="subject" class="form-control" placeholder="¿En qué podemos ayudarte?" required
+                   value="{{ form.subject.value|default:'' }}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mensaje *</label>
+            <textarea name="message" class="form-control" rows="5" placeholder="Escríbenos..." required>{{ form.message.value|default:'' }}</textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full">Enviar mensaje</button>
+        </form>
+      </div>
+
+      <!-- Info de contacto -->
+      <div>
+        <h2 style="margin-bottom:2rem;">Información</h2>
+        <div style="display:flex;flex-direction:column;gap:2rem;">
+          {% if site_config.email %}
+          <div>
+            <div class="caption text-pink" style="margin-bottom:.5rem;">Email</div>
+            <a href="mailto:{{ site_config.email }}" style="font-size:1rem;color:var(--color-brown);">{{ site_config.email }}</a>
+          </div>
+          {% endif %}
+          {% if site_config.phone %}
+          <div>
+            <div class="caption text-pink" style="margin-bottom:.5rem;">WhatsApp / Teléfono</div>
+            <a href="tel:{{ site_config.phone }}" style="font-size:1rem;color:var(--color-brown);">{{ site_config.phone }}</a>
+          </div>
+          {% endif %}
+          {% if site_config.city %}
+          <div>
+            <div class="caption text-pink" style="margin-bottom:.5rem;">Ubicación</div>
+            <p style="font-size:1rem;color:var(--color-brown);margin:0;">{{ site_config.city }}</p>
+          </div>
+          {% endif %}
+          <div>
+            <div class="caption text-pink" style="margin-bottom:.75rem;">Síguenos</div>
+            <div class="footer-social" style="justify-content:flex-start;">
+              {% for social in social_links %}
+              <a href="{{ social.url }}" target="_blank" rel="noopener"
+                 style="border-color:var(--color-gray-300);color:var(--color-brown);" aria-label="{{ social.get_platform_display }}">
+                {% if social.platform == 'instagram' %}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                {% else %}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/></svg>
+                {% endif %}
+              </a>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
