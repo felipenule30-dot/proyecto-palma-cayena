@@ -1,0 +1,45 @@
+services:
+  - type: web
+    name: palmacayena
+    runtime: python
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn config.wsgi:application --bind 0.0.0.0:$PORT"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.production
+      - key: PYTHON_VERSION
+        value: "3.12.7"
+      # --- Los siguientes se configuran en el panel de Render (no en el repo) ---
+      - key: SECRET_KEY
+        sync: false
+      - key: ALLOWED_HOSTS
+        sync: false
+      - key: CSRF_TRUSTED_ORIGINS
+        sync: false
+      - key: ADMIN_URL
+        sync: false
+      # Base de datos (Supabase)
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      # Wompi
+      - key: WOMPI_PUBLIC_KEY
+        sync: false
+      - key: WOMPI_PRIVATE_KEY
+        sync: false
+      - key: WOMPI_INTEGRITY_SECRET
+        sync: false
+      - key: WOMPI_EVENTS_SECRET
+        sync: false
+      - key: WOMPI_SANDBOX
+        sync: false
+      - key: SITE_URL
+        sync: false

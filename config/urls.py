@@ -17,7 +17,7 @@ sitemaps = {
 }
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path(settings.ADMIN_URL, admin.site.urls),
     # Rutas con prefijo específico — deben ir ANTES del catch-all de pages
     path('tienda/', include('apps.shop.urls')),
     path('carrito/', include('apps.cart.urls')),

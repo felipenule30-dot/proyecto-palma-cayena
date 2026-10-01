@@ -31,9 +31,10 @@
         <script src="https://checkout.wompi.co/widget.js"
           data-render="button"
           data-public-key="{{ wompi_public_key }}"
-          data-currency="COP"
+          data-currency="{{ currency }}"
           data-amount-in-cents="{{ amount_in_cents }}"
           data-reference="{{ order.order_number }}"
+          data-signature:integrity="{{ integrity_signature }}"
           data-redirect-url="{{ request.scheme }}://{{ request.get_host }}{% url 'checkout:confirmation' order.order_number %}">
         </script>
       </div>

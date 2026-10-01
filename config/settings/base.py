@@ -11,7 +11,11 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-change-me-in-producti
 
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = [h.strip() for h in os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if h.strip()]
+
+# Orígenes de confianza para CSRF (requerido con HTTPS + dominio propio en Django 4+)
+# Ej: "https://palmacayena.com,https://www.palmacayena.com,https://palmacayena.onrender.com"
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',') if o.strip()]
 
 DJANGO_APPS = [
     'django.contrib.admin',
@@ -128,6 +132,7 @@ CART_SESSION_ID = 'cart'
 WOMPI_PUBLIC_KEY = os.environ.get('WOMPI_PUBLIC_KEY', '')
 WOMPI_PRIVATE_KEY = os.environ.get('WOMPI_PRIVATE_KEY', '')
 WOMPI_EVENTS_SECRET = os.environ.get('WOMPI_EVENTS_SECRET', '')
+WOMPI_INTEGRITY_SECRET = os.environ.get('WOMPI_INTEGRITY_SECRET', '')
 WOMPI_SANDBOX = os.environ.get('WOMPI_SANDBOX', 'True') == 'True'
 WOMPI_SANDBOX_URL = 'https://sandbox.wompi.co/v1'
 WOMPI_PROD_URL = 'https://production.wompi.co/v1'
@@ -144,6 +149,9 @@ DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'Palma Cayena <hola@pa
 SITE_URL = os.environ.get('SITE_URL', 'http://localhost:8000')
 
 # Admin customization
+# URL del panel de staff. En producción se cambia por algo no adivinable vía env
+# (ej. ADMIN_URL=panel-palma-x7k2/) para reducir ataques de fuerza bruta al login.
+ADMIN_URL = os.environ.get('ADMIN_URL', 'admin/')
 ADMIN_SITE_HEADER = 'Palma Cayena — Panel de Administración'
 ADMIN_SITE_TITLE = 'Palma Cayena Admin'
 ADMIN_INDEX_TITLE = 'Panel de Control'

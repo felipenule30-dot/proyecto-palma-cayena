@@ -4,7 +4,7 @@ from .forms import CheckoutForm
 from apps.cart.cart import Cart
 from apps.orders.models import Order, OrderItem
 from apps.payments.models import Payment
-import hashlib, hmac
+import hashlib
 
 
 def checkout(request):
@@ -72,12 +72,22 @@ def payment_page(request, order_number):
     wompi_public_key = settings.WOMPI_PUBLIC_KEY
     # Amount in cents for Wompi
     amount_in_cents = int(order.total * 100)
-    
+    currency = 'COP'
+
+    # Firma de integridad exigida por el Widget/Checkout de Wompi:
+    # SHA256(reference + amountInCents + currency + integritySecret)
+    integrity_signature = ''
+    if settings.WOMPI_INTEGRITY_SECRET:
+        signature_string = f'{order.order_number}{amount_in_cents}{currency}{settings.WOMPI_INTEGRITY_SECRET}'
+        integrity_signature = hashlib.sha256(signature_string.encode('utf-8')).hexdigest()
+
     context = {
         'order': order,
         'wompi_public_key': wompi_public_key,
         'wompi_sandbox': settings.WOMPI_SANDBOX,
         'amount_in_cents': amount_in_cents,
+        'currency': currency,
+        'integrity_signature': integrity_signature,
         'meta_title': f'Pago pedido #{order.order_number} — Palma Cayena',
     }
     return render(request, 'checkout/payment.html', context)
