@@ -19,3 +19,8 @@ else
   echo ">> Base vacía — cargando datos iniciales (seed)..."
   python run_seed.py
 fi
+
+# Crea el superusuario (panel de staff) si no existe. Render Free no tiene shell,
+# así que se crea desde las variables DJANGO_SUPERUSER_USERNAME / _EMAIL / _PASSWORD.
+# Si ya existe o faltan esas variables, no pasa nada (no rompe el despliegue).
+python manage.py createsuperuser --noinput 2>/dev/null && echo ">> Superusuario creado." || echo ">> Superusuario ya existe o faltan variables DJANGO_SUPERUSER_* (ok)."
