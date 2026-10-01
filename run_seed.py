@@ -11,8 +11,8 @@ from apps.pages.models import HeroSection, HomepageBlock, BenefitItem, Testimoni
 c = SiteConfig.get()
 c.site_name = 'Palma Cayena'
 c.site_tagline = 'Nacida del Caribe. Disenada para la mujer que lleva el mar adentro.'
-c.email = 'hola@palmacayena.com'
-c.phone = '+57 310 000 0000'
+c.email = 'palmacayena@gmail.com'
+c.phone = '+57 301 7122411'
 c.city = 'Cartagena, Colombia'
 c.default_meta_title = 'Palma Cayena - Vestidos de bano del Caribe Colombiano'
 c.default_meta_description = 'Vestidos de bano disenados en el Caribe colombiano. Feminidad, sofisticacion y el espiritu de Cartagena.'
@@ -91,8 +91,8 @@ print('Products + Variants OK')
 
 HeroSection.objects.all().delete()
 HeroSection.objects.create(
-    title='Naces del mar, vives en el.',
-    subtitle='Vestidos de bano para la mujer que lleva el Caribe en la piel.',
+    title='For slow mornings, salty skin & golden afternoons.',
+    subtitle='Crafted by Colombian hands.',
     cta_text='Explorar coleccion', cta_url='/tienda/', is_active=True, order=1
 )
 print('Hero OK')
@@ -119,10 +119,9 @@ print('Benefits OK')
 
 Testimonial.objects.all().delete()
 for i, (n, l, t) in enumerate([
-    ('Valeria M.', 'Cartagena', 'Llevo el Bikini Valeria a todas mis vacaciones. Es literalmente perfecto.'),
-    ('Isabela R.', 'Bogota', 'La calidad es increible. Se nota que cada pieza esta hecha con amor.'),
-    ('Camila P.', 'Medellin', 'Finalmente una marca colombiana que se siente de lujo real.'),
-    ('Sofia G.', 'Barranquilla', 'El envio fue rapidisimo y el empaque demasiado lindo.'),
+    ('Saso - Cata', '', 'Me encantan los enterizos: la tela es gruesa y de una horma espectacular, asi que estilizan el cuerpo y quedan tan bien que los uso tambien como body con jeans. Se sienten firmes y se ven impecables dentro y fuera del agua.'),
+    ('Male', '', 'La calidad de la tela es lo que mas me conquisto. Se siente suave pero resistente, no se transparenta ni pierde la forma, y despues de varios usos sigue como nueva.'),
+    ('Isa', '', 'Me enamore de lo colorido y a la vez elegante de cada diseno. Son piezas alegres y sofisticadas al mismo tiempo, perfectas para sentirme segura y femenina en la playa.'),
 ]):
     Testimonial.objects.create(name=n, location=l, text=t, rating=5, is_active=True, order=i)
 print('Testimonials OK')
