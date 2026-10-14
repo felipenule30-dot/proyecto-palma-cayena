@@ -24,3 +24,11 @@ fi
 # así que se crea desde las variables DJANGO_SUPERUSER_USERNAME / _EMAIL / _PASSWORD.
 # Si ya existe o faltan esas variables, no pasa nada (no rompe el despliegue).
 python manage.py createsuperuser --noinput 2>/dev/null && echo ">> Superusuario creado." || echo ">> Superusuario ya existe o faltan variables DJANGO_SUPERUSER_* (ok)."
+
+# Restablecer la contraseña del admin SOLO si se define ADMIN_RESET_PASSWORD.
+# Uso: define esa variable en Render con la nueva clave, redespliega, verifica el
+# acceso y LUEGO borra la variable (si se deja, reaplicará la misma clave en cada deploy).
+if [ -n "${ADMIN_RESET_PASSWORD:-}" ]; then
+  echo ">> ADMIN_RESET_PASSWORD detectada — restableciendo contraseña del admin..."
+  python manage.py reset_admin
+fi
