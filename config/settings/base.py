@@ -123,6 +123,28 @@ STATICFILES_STORAGE = 'apps.core.storage.ResilientStaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# --- Almacenamiento de imágenes subidas (media) ---
+# Con credenciales S3 (Supabase Storage) las imágenes persisten de forma
+# permanente, fuera del servidor. Sin ellas, se usa el disco local (desarrollo).
+# El plan Free de Render NO tiene disco persistente, así que en producción
+# estas variables DEBEN estar configuradas o las fotos se perderían al reiniciar.
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME', '')
+if AWS_STORAGE_BUCKET_NAME:
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID', '')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY', '')
+    AWS_S3_ENDPOINT_URL = os.environ.get('AWS_S3_ENDPOINT_URL', '')
+    AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME', 'us-east-1')
+    # Dominio público para servir las imágenes (sin https://), por ejemplo:
+    # <ref>.supabase.co/storage/v1/object/public/<bucket>
+    AWS_S3_CUSTOM_DOMAIN = os.environ.get('AWS_S3_CUSTOM_DOMAIN', '')
+    AWS_DEFAULT_ACL = None
+    AWS_QUERYSTRING_AUTH = False
+    AWS_S3_FILE_OVERWRITE = False
+    AWS_S3_ADDRESSING_STYLE = 'path'  # Supabase Storage requiere path-style
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3.S3Storage'
+    # Genera las miniaturas al subir (evita chequeos lentos contra S3 por request)
+    IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = 'imagekit.cachefiles.strategies.Optimistic'
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Cart session key
