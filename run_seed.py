@@ -28,7 +28,7 @@ print('SocialLinks OK')
 
 Size.objects.all().delete()
 sizes = {}
-for i, (n, d) in enumerate([('XS','Extra Small'),('S','Small'),('M','Medium'),('L','Large'),('XL','Extra Large')]):
+for i, (n, d) in enumerate([('XS','Extra Small'),('S','Small'),('M','Medium'),('L','Large')]):
     sizes[n] = Size.objects.create(name=n, description=d, order=i)
 print('Sizes OK')
 
