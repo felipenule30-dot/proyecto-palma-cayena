@@ -10,7 +10,7 @@ from apps.pages.models import HeroSection, HomepageBlock, BenefitItem, Testimoni
 # Site config
 c = SiteConfig.get()
 c.site_name = 'Palma Cayena'
-c.site_tagline = 'Nacida del Caribe. Disenada para la mujer que lleva el mar adentro.'
+c.site_tagline = 'Nacida del Caribe. Diseñada para la mujer que lleva el mar adentro.'
 c.email = 'palmacayena@gmail.com'
 c.phone = '+57 320 8825140'
 c.city = 'Cartagena, Colombia'

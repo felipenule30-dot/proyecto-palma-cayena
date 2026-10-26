@@ -13,6 +13,7 @@
       {% if product.is_on_sale %}<span class="badge badge-sale">-{{ product.discount_percentage }}%</span>{% endif %}
       {% if product.is_featured and not product.is_new %}<span class="badge badge-featured">Fav</span>{% endif %}
     </div>
+    <div class="product-card-title">{{ product.name }}</div>
     <div class="product-card-action">
       <span class="btn btn-primary btn-sm btn-full">Ver producto</span>
     </div>
@@ -21,9 +22,6 @@
     {% if product.category %}
     <div class="product-card-category">{{ product.category.name }}</div>
     {% endif %}
-    <h3 class="product-card-name">
-      <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
-    </h3>
     <div class="product-card-price">
       <span class="price-current">{{ product.price|cop }}</span>
       {% if product.is_on_sale %}
