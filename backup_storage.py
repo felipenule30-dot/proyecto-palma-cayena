@@ -18,6 +18,12 @@ import os
 import boto3
 from botocore.config import Config
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv()  # lee las variables AWS_* del archivo .env automáticamente
+except ImportError:
+    pass
+
 BUCKET = os.environ.get("AWS_STORAGE_BUCKET_NAME", "media")
 ENDPOINT = os.environ["AWS_S3_ENDPOINT_URL"]
 REGION = os.environ.get("AWS_S3_REGION_NAME", "us-east-1")
