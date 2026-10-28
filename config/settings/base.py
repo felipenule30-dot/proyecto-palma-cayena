@@ -136,11 +136,15 @@ if AWS_STORAGE_BUCKET_NAME:
     AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME', 'us-east-1')
     # Dominio público para servir las imágenes (sin https://), por ejemplo:
     # <ref>.supabase.co/storage/v1/object/public/<bucket>
-    AWS_S3_CUSTOM_DOMAIN = os.environ.get('AWS_S3_CUSTOM_DOMAIN', '')
+    # En Railway Storage se deja vacío: las URLs salen del endpoint S3.
+    _custom_domain = os.environ.get('AWS_S3_CUSTOM_DOMAIN', '').strip()
+    if _custom_domain:
+        AWS_S3_CUSTOM_DOMAIN = _custom_domain
     AWS_DEFAULT_ACL = None
-    AWS_QUERYSTRING_AUTH = False
+    AWS_QUERYSTRING_AUTH = os.environ.get('AWS_QUERYSTRING_AUTH', 'False') == 'True'
     AWS_S3_FILE_OVERWRITE = False
-    AWS_S3_ADDRESSING_STYLE = 'path'  # Supabase Storage requiere path-style
+    # Supabase Storage usa path. Railway Storage usa virtual.
+    AWS_S3_ADDRESSING_STYLE = os.environ.get('AWS_S3_ADDRESSING_STYLE', 'path')
     DEFAULT_FILE_STORAGE = 'storages.backends.s3.S3Storage'
     # Genera las miniaturas al subir (evita chequeos lentos contra S3 por request)
     IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = 'imagekit.cachefiles.strategies.Optimistic'

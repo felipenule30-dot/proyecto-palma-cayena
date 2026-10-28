@@ -1,9 +1,14 @@
-{% load static currency %}
+{% load static currency images %}
 <article class="product-card fade-in">
   <a href="{{ product.get_absolute_url }}" class="product-card-image" aria-label="{{ product.name }}">
     {% with main_img=product.main_image %}
     {% if main_img %}
-    <img src="{{ main_img.image.url }}" alt="{{ main_img.alt_text|default:product.name }}" loading="lazy">
+    <img src="{{ main_img.image.url|photo:640 }}"
+         srcset="{{ main_img.image.url|photo:640 }} 640w, {{ main_img.image.url|photo:1280 }} 1280w"
+         sizes="(max-width: 768px) 50vw, 320px"
+         alt="{{ main_img.alt_text|default:product.name }}"
+         width="640" height="853"
+         loading="lazy" decoding="async">
     {% else %}
     <div style="width:100%;height:100%;background:linear-gradient(135deg,#EDE3D8,#C855B8);"></div>
     {% endif %}

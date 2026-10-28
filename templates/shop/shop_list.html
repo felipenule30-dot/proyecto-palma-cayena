@@ -9,7 +9,7 @@
 <div style="padding-top:72px;">
 
   <!-- PAGE HEADER -->
-  <div class="page-hero" style="padding:4rem 0 3rem;">
+  <div class="page-hero">
     <div class="container">
       <!-- Breadcrumb -->
       <nav class="breadcrumb">
@@ -110,7 +110,7 @@
         <div class="shop-toolbar">
           <span class="shop-count">{{ total_products }} producto{{ total_products|pluralize:"s" }}</span>
           <div style="display:flex;gap:1rem;align-items:center;">
-            <button class="btn btn-outline btn-sm filter-toggle" style="display:none;" aria-label="Filtros">
+            <button type="button" class="btn btn-outline btn-sm filter-toggle" aria-label="Filtros" aria-expanded="false">
               Filtros
             </button>
             <select class="sort-select" name="orden" onchange="window.location.href='?orden='+this.value{% if selected_category %}&categoria={{ selected_category.slug }}{% endif %}'">
