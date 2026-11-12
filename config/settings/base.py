@@ -33,7 +33,7 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    'apps.core',
+    'apps.core.apps.CoreConfig',
     'apps.shop',
     'apps.cart',
     'apps.checkout',

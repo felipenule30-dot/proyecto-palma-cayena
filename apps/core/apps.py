@@ -17,7 +17,10 @@ class CoreConfig(AppConfig):
                 ensure_variants(instance)
             except Exception:
                 import logging
-                logging.getLogger(__name__).exception("No se pudieron generar las fotos reducidas")
+                logging.getLogger(__name__).exception(
+                    "No se pudieron generar las fotos reducidas de %s",
+                    getattr(instance, "pk", instance),
+                )
 
         for model in apps.get_models():
             if any(isinstance(field, ImageField) for field in model._meta.fields):
