@@ -6,6 +6,7 @@
     <img src="{{ main_img.image.url|photo:640 }}"
          srcset="{{ main_img.image.url|photo:640 }} 640w, {{ main_img.image.url|photo:1280 }} 1280w"
          sizes="(max-width: 768px) 50vw, 320px"
+         data-original="{{ main_img.image.url }}"
          alt="{{ main_img.alt_text|default:product.name }}"
          width="640" height="853"
          loading="lazy" decoding="async">

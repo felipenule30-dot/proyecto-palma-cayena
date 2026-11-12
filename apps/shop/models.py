@@ -216,6 +216,18 @@ class ProductImage(models.Model):
             # Solo una imagen principal por producto
             ProductImage.objects.filter(product=self.product, is_main=True).update(is_main=False)
         super().save(*args, **kwargs)
+        # Generar copias livianas aquí (no solo por señal): el admin las necesita
+        # apenas se sube la foto para que la tienda no apunte a un WebP inexistente.
+        try:
+            from apps.core.images import write_variants_for_name
+            if self.image and self.image.name:
+                write_variants_for_name(self.image.name)
+        except Exception:
+            import logging
+            logging.getLogger(__name__).exception(
+                "No se pudieron generar las fotos reducidas de ProductImage %s",
+                self.pk,
+            )
 
 
 class ProductVariant(models.Model):

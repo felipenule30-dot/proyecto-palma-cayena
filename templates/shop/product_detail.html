@@ -59,6 +59,7 @@
           <img src="{{ main_img.image.url|photo:1280 }}"
                srcset="{{ main_img.image.url|photo:640 }} 640w, {{ main_img.image.url|photo:1280 }} 1280w"
                sizes="(max-width: 768px) 100vw, 50vw"
+               data-original="{{ main_img.image.url }}"
                alt="{{ main_img.alt_text|default:product.name }}"
                id="main-product-image"
                width="1280" height="1707"
@@ -71,8 +72,8 @@
         {% if product.images.count > 1 %}
         <div class="product-gallery-thumbs">
           {% for image in product.images.all %}
-          <div class="product-gallery-thumb {% if image.is_main %}active{% endif %}" data-full="{{ image.image.url|photo:1280 }}">
-            <img src="{{ image.image.url|photo:640 }}" alt="{{ image.alt_text|default:product.name }}" width="160" height="200" loading="lazy" decoding="async">
+          <div class="product-gallery-thumb {% if image.is_main %}active{% endif %}" data-full="{{ image.image.url|photo:1280 }}" data-original="{{ image.image.url }}">
+            <img src="{{ image.image.url|photo:640 }}" data-original="{{ image.image.url }}" alt="{{ image.alt_text|default:product.name }}" width="160" height="200" loading="lazy" decoding="async">
           </div>
           {% endfor %}
         </div>

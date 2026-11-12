@@ -2,6 +2,17 @@
    PALMA CAYENA — JavaScript principal
    ============================================================ */
 
+/* If a compressed photo 404s, fall back to the original upload. */
+document.addEventListener('error', (event) => {
+  const img = event.target;
+  if (!(img instanceof HTMLImageElement)) return;
+  const original = img.dataset.original;
+  if (!original || img.dataset.fallbackApplied === '1') return;
+  img.dataset.fallbackApplied = '1';
+  img.removeAttribute('srcset');
+  img.src = original;
+}, true);
+
 document.addEventListener('DOMContentLoaded', () => {
 
   /* --- Navbar scroll effect --- */
@@ -53,6 +64,10 @@ document.addEventListener('DOMContentLoaded', () => {
     thumbs.forEach(thumb => {
       thumb.addEventListener('click', () => {
         const src = thumb.dataset.full || thumb.querySelector('img').src;
+        if (thumb.dataset.original) {
+          galleryMain.dataset.original = thumb.dataset.original;
+          delete galleryMain.dataset.fallbackApplied;
+        }
         galleryMain.removeAttribute('srcset');
         galleryMain.src = src;
         thumbs.forEach(t => t.classList.remove('active'));
