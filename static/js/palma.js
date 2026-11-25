@@ -2,6 +2,17 @@
    PALMA CAYENA — JavaScript principal
    ============================================================ */
 
+/* If a compressed photo 404s, fall back to the original upload. */
+document.addEventListener('error', (event) => {
+  const img = event.target;
+  if (!(img instanceof HTMLImageElement)) return;
+  const original = img.dataset.original;
+  if (!original || img.dataset.fallbackApplied === '1') return;
+  img.dataset.fallbackApplied = '1';
+  img.removeAttribute('srcset');
+  img.src = original;
+}, true);
+
 document.addEventListener('DOMContentLoaded', () => {
 
   /* --- Navbar scroll effect --- */
@@ -20,15 +31,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const menuClose = document.querySelector('.mobile-menu-close');
 
   if (hamburger && mobileMenu) {
-    hamburger.addEventListener('click', () => {
-      mobileMenu.classList.add('open');
-      document.body.style.overflow = 'hidden';
-    });
-  }
-  if (menuClose && mobileMenu) {
-    menuClose.addEventListener('click', () => {
-      mobileMenu.classList.remove('open');
-      document.body.style.overflow = '';
+    const setMenu = (open) => {
+      mobileMenu.classList.toggle('open', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+      hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    hamburger.addEventListener('click', () => setMenu(true));
+    if (menuClose) menuClose.addEventListener('click', () => setMenu(false));
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => setMenu(false));
     });
   }
 
@@ -52,7 +63,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (galleryMain && thumbs.length) {
     thumbs.forEach(thumb => {
       thumb.addEventListener('click', () => {
-        const src = thumb.querySelector('img').src;
+        const src = thumb.dataset.full || thumb.querySelector('img').src;
+        if (thumb.dataset.original) {
+          galleryMain.dataset.original = thumb.dataset.original;
+          delete galleryMain.dataset.fallbackApplied;
+        }
+        galleryMain.removeAttribute('srcset');
         galleryMain.src = src;
         thumbs.forEach(t => t.classList.remove('active'));
         thumb.classList.add('active');
@@ -209,7 +225,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const sidebar = document.querySelector('.shop-sidebar');
   if (filterToggle && sidebar) {
     filterToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('open');
+      const open = sidebar.classList.toggle('open');
+      filterToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      filterToggle.textContent = open ? 'Cerrar filtros' : 'Filtros';
     });
   }
 

@@ -1,0 +1,7 @@
+[build]
+builder = "RAILPACK"
+buildCommand = "pip install -r requirements.txt && python manage.py collectstatic --no-input"
+
+[deploy]
+startCommand = "bash ./start.sh"
+restartPolicyType = "ON_FAILURE"

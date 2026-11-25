@@ -1,5 +1,6 @@
 from decimal import Decimal
 from apps.shop.models import ProductVariant, Product
+from apps.core.images import resized_url
 from apps.core.models import SiteConfig
 
 
@@ -29,7 +30,7 @@ class Cart:
                     'sku': variant.sku,
                     'price': str(variant.effective_price),
                     'quantity': 0,
-                    'image_url': variant.product.main_image.image.url if variant.product.main_image else '',
+                    'image_url': resized_url(variant.product.main_image.image.url, 640) if variant.product.main_image else '',
                 }
             except ProductVariant.DoesNotExist:
                 return
@@ -66,6 +67,7 @@ class Cart:
             item = dict(item)
             item['price'] = Decimal(item['price'])
             item['total'] = item['price'] * item['quantity']
+            item['image_url'] = resized_url(item.get('image_url'), 640)
             yield item
 
     def __len__(self):

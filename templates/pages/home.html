@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static images %}
 
 {% block title %}Palma Cayena — Vestidos de baño del Caribe Colombiano{% endblock %}
 {% block meta_description %}Descubre Palma Cayena, vestidos de baño diseñados en el corazón del Caribe colombiano. Feminidad, sofisticación y el espíritu de Cartagena en cada pieza.{% endblock %}
@@ -15,7 +15,12 @@
       <source src="{{ hero.video_url }}" type="video/mp4">
     </video>
     {% elif hero and hero.image %}
-    <img src="{{ hero.image.url }}" alt="{{ hero.image_alt|default:'Palma Cayena' }}" loading="eager" fetchpriority="high">
+    <img src="{{ hero.image.url|photo:1280 }}"
+         srcset="{{ hero.image.url|photo:640 }} 640w, {{ hero.image.url|photo:1280 }} 1280w"
+         sizes="100vw"
+         alt="{{ hero.image_alt|default:'Palma Cayena' }}"
+         width="1280" height="1600"
+         loading="eager" fetchpriority="high" decoding="async">
     {% else %}
     <div style="width:100%;height:100%;background:linear-gradient(160deg,#3A2820 0%,#6B4E43 45%,#C855B8 100%);"></div>
     {% endif %}
@@ -46,11 +51,15 @@
 {% if featured_collection %}
 <section class="section bg-cream-dark">
   <div class="container">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;">
+    <div class="media-split">
       <div class="fade-in">
         {% if featured_collection.image %}
-        <img src="{{ featured_collection.image.url }}"
+        <img src="{{ featured_collection.image.url|photo:1280 }}"
+             srcset="{{ featured_collection.image.url|photo:640 }} 640w, {{ featured_collection.image.url|photo:1280 }} 1280w"
+             sizes="(max-width: 768px) 100vw, 50vw"
              alt="{{ featured_collection.image_alt|default:featured_collection.name }}"
+             width="1280" height="1600"
+             loading="lazy" decoding="async"
              style="width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:var(--radius-md);">
         {% else %}
         <div style="width:100%;aspect-ratio:4/5;background:linear-gradient(135deg,#C855B8,#BC0E2C);border-radius:var(--radius-md);"></div>
@@ -80,7 +89,12 @@
       {% for category in categories %}
       <a href="{{ category.get_absolute_url }}" class="category-card fade-in">
         {% if category.image %}
-        <img src="{{ category.image.url }}" alt="{{ category.image_alt|default:category.name }}" loading="lazy">
+        <img src="{{ category.image.url|photo:640 }}"
+             srcset="{{ category.image.url|photo:640 }} 640w, {{ category.image.url|photo:1280 }} 1280w"
+             sizes="(max-width: 768px) 100vw, 33vw"
+             alt="{{ category.image_alt|default:category.name }}"
+             width="640" height="853"
+             loading="lazy" decoding="async">
         {% else %}
         <div style="width:100%;height:100%;background:linear-gradient(135deg,#3A2820,#C855B8);"></div>
         {% endif %}
@@ -122,7 +136,12 @@
 <section class="storytelling-block">
   {% if block.image %}
   <div class="storytelling-media">
-    <img src="{{ block.image.url }}" alt="{{ block.image_alt|default:'Palma Cayena' }}" loading="lazy">
+    <img src="{{ block.image.url|photo:1280 }}"
+         srcset="{{ block.image.url|photo:640 }} 640w, {{ block.image.url|photo:1280 }} 1280w"
+         sizes="(max-width: 768px) 100vw, 50vw"
+         alt="{{ block.image_alt|default:'Palma Cayena' }}"
+         width="1280" height="1600"
+         loading="lazy" decoding="async">
   </div>
   {% else %}
   <div class="storytelling-media" style="background:linear-gradient(135deg,#C855B8,#BC0E2C);min-height:500px;"></div>
